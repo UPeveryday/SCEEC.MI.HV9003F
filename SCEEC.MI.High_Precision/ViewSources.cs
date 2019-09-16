@@ -41,7 +41,8 @@ namespace SCEEC.MI.High_Precision
         public double TestTan2 { get; set; }
         public double TestTan3 { get; set; }
         public double TestTan4 { get; set; }
-
+        public double OneVolate { get; set; }
+        public byte AlarmStata { get; set; }
 
         public ViewSources(byte[] bits)
         {
@@ -63,7 +64,11 @@ namespace SCEEC.MI.High_Precision
             TestRx2 = bits[50];
             TestRx3 = bits[51];
             TestRx4 = bits[52];
-            //TestSpeed = bits[53];
+            TestSpeed = bits[53];
+            OneVolate = BitConverter.ToSingle(bits.Skip(54).Take(4).ToArray(), 0);
+            AlarmStata = bits[58];
+
+
             //TestU0 = TestIn / (2 * Math.PI * TestFre * ((double)TestCn.value));
             //TestCx1 = TestIx1 / (2 * Math.PI * TestU0);
             //TestCx2 = TestIx2 / (2 * Math.PI * TestU0);

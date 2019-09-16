@@ -163,7 +163,9 @@ namespace SCEEC.Numerics
                 case 24:
                     return "Y";
                 default:
-                    throw new Exception("值大小过大或过小。");
+                    return " ";
+
+                 //   throw new Exception("值大小过大或过小。");
             }
         }
 

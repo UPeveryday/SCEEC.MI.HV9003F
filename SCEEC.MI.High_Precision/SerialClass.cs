@@ -211,6 +211,8 @@ namespace SCEEC.MI.High_Precision
             }
             try
             {
+                System.Threading.Thread.Sleep(200);
+
                 byte[] _data = new byte[_seriaPort.BytesToRead];
                 _seriaPort.Read(_data, 0, _data.Length);
                 if (_data.Length == 0)
@@ -350,9 +352,8 @@ namespace SCEEC.MI.High_Precision
             {
                 ReceiveEventFlag = true;//关闭接收事件
                 _seriaPort.DiscardInBuffer();//清空接收缓冲区  
-                Thread.Sleep(10);
-                _seriaPort.DiscardInBuffer();//清空接收缓冲区     
                 if (SendData.Length != 0) _seriaPort.Write(SendData, 0, SendData.Length);
+                _seriaPort.DiscardInBuffer();//清空接收缓冲区  
                 if (RecDataLength == 0) return null;
                 if (RecDataLength != -1)
                 {
@@ -382,8 +383,13 @@ namespace SCEEC.MI.High_Precision
                         {
                             offset += SingalReadDataLength;
                             if (RecData.Length == RecDataLength)
+                            {
+                                ReceiveEventFlag = false;//关闭接收事件
                                 return RecData;
-                            Thread.Sleep(100);
+                            }
+
+                            Thread.Sleep(50);
+
                         }
                     }
                 }

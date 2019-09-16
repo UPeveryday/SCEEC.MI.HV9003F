@@ -22,3 +22,9 @@ C:\Users\My\Desktop\HV9003TE4(1)\SCEEC.Numerics\obj\Debug\SCEEC.Numerics.csprojA
 C:\Users\My\Desktop\HV9003TE4(1)\SCEEC.Numerics\obj\Debug\SCEEC.Numerics.csproj.CoreCompileInputs.cache
 C:\Users\My\Desktop\HV9003TE4(1)\SCEEC.Numerics\obj\Debug\SCEEC.Numerics.dll
 C:\Users\My\Desktop\HV9003TE4(1)\SCEEC.Numerics\obj\Debug\SCEEC.Numerics.pdb
+C:\Users\My\Desktop\HV9003TE4调试数据\SCEEC.Numerics\obj\Debug\SCEEC.Numerics.csprojAssemblyReference.cache
+C:\Users\My\Desktop\HV9003TE4调试数据\SCEEC.Numerics\obj\Debug\SCEEC.Numerics.csproj.CoreCompileInputs.cache
+C:\Users\My\Desktop\HV9003TE4调试数据\SCEEC.Numerics\obj\Debug\SCEEC.Numerics.dll
+C:\Users\My\Desktop\HV9003TE4调试数据\SCEEC.Numerics\obj\Debug\SCEEC.Numerics.pdb
+C:\Users\My\Desktop\HV9003TE4调试数据\SCEEC.Numerics\bin\Debug\SCEEC.Numerics.dll
+C:\Users\My\Desktop\HV9003TE4调试数据\SCEEC.Numerics\bin\Debug\SCEEC.Numerics.pdb

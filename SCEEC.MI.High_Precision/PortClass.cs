@@ -127,7 +127,7 @@ namespace SCEEC.MI.High_Precision
 
                 RtsEnable = true,
 
-                ReadTimeout = 2000
+                ReadTimeout = 10000
             };
 
             setSerialPort();
@@ -162,7 +162,7 @@ namespace SCEEC.MI.High_Precision
 
             _serialPort.RtsEnable = true;  //自动请求
 
-            _serialPort.ReadTimeout = 3000;//超时
+            _serialPort.ReadTimeout = 10000;//超时
 
             setSerialPort();
 
@@ -228,7 +228,9 @@ namespace SCEEC.MI.High_Precision
 
             _serialPort.RtsEnable = false;
 
-            _serialPort.ReadTimeout = 3000;
+            _serialPort.ReadTimeout = 10000;
+            _serialPort.ReadBufferSize = 10000;
+            _serialPort.WriteBufferSize = 10000;
 
             _serialPort.NewLine = "/r/n";
 
@@ -299,9 +301,9 @@ namespace SCEEC.MI.High_Precision
                 _serialPort.Close();
 
             try
-
             {
-
+                _serialPort.ReadBufferSize = 10000;
+                _serialPort.WriteBufferSize = 10000;
                 //打开串口
 
                 _serialPort.Open();
@@ -368,7 +370,7 @@ namespace SCEEC.MI.High_Precision
             }
             try
             {
-               System.Threading.Thread.Sleep(150);
+                System.Threading.Thread.Sleep(150);
 
                 byte[] _data = new byte[_serialPort.BytesToRead];
 
@@ -532,7 +534,7 @@ namespace SCEEC.MI.High_Precision
 
                     System.Threading.Thread.Sleep(10);
 
-                   // ReceiveEventFlag = false;      //打开事件
+                    // ReceiveEventFlag = false;      //打开事件
 
                     while (num++ < Overtime)
 
@@ -792,15 +794,15 @@ namespace SCEEC.MI.High_Precision
             {
                 ReceiveEventFlag = true;//关闭接收事件
                 _serialPort.DiscardInBuffer();//清空接收缓冲区  
-                Thread.Sleep(10);
-                _serialPort.DiscardInBuffer();//清空接收缓冲区     
                 if (SendData.Length != 0) _serialPort.Write(SendData, 0, SendData.Length);
                 if (RecDataLength == 0) return null;
+
                 if (RecDataLength != -1)
                 {
                     for (int t = 0; t < Timeout; t++)
                     {
-                        if (_serialPort.BytesToRead >= RecDataLength) break;
+                        if (_serialPort.BytesToRead >= RecDataLength)
+                            break;
                         Thread.Sleep(100);
                     }
                 }

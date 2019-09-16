@@ -19,7 +19,7 @@ namespace SCEEC.MI.High_Precision
         StartBuck
     }
 
-   
+
     public enum MisTak
     {
         Success = 0,
@@ -30,7 +30,7 @@ namespace SCEEC.MI.High_Precision
     }
     public class High_PrecisionClass
     {
-        public PortClass LocalPrecision = new PortClass();
+        public SerialClass LocalPrecision = new SerialClass();
         public readonly string ComPort;
         public bool IsTestting = false;
         public double Cn { get; set; }
@@ -54,7 +54,8 @@ namespace SCEEC.MI.High_Precision
             {
                 LocalPrecision.setSerialPort(ComPort, 9600, 8, 1);
                 LocalPrecision.openPort();
-                LocalPrecision.DataReceived += new PortClass.SerialPortDataReceiveEventArgs(DataReceive);
+                //    LocalPrecision.DataReceived += new PortClass.SerialPortDataReceiveEventArgs(DataReceive);
+                LocalPrecision.DataReceived += LocalPrecision_DataReceived;
             }
             catch (Exception)
             {
@@ -62,6 +63,12 @@ namespace SCEEC.MI.High_Precision
             }
             return IsSuccess;
 
+
+        }
+
+        private void LocalPrecision_DataReceived(object sender, SerialDataReceivedEventArgs e, byte[] bits)
+        {
+            OutTestResult(bits);
 
         }
 
@@ -121,7 +128,6 @@ namespace SCEEC.MI.High_Precision
         {
             LocalPrecision.closePort();
         }
-        // ResultDelegate testresults = ReturnTestResult;
         public event ResultDelegate OutTestResult;
         private static byte[] ReturnTestResult(byte[] bits)
         {
@@ -134,7 +140,7 @@ namespace SCEEC.MI.High_Precision
 
         public byte StartTest()
         {
-            if(!IsTestting)
+            if (!IsTestting)
             {
                 byte[] Issuccss = new byte[4096];
                 byte[] TestComman = { 0x69, 0x6A, CheckData(new byte[2] { 0x69, 0x6A }) };
@@ -147,6 +153,7 @@ namespace SCEEC.MI.High_Precision
             }
             return 0x04;
         }
+
 
         public MisTak ChangeTestChannel(byte testChannel)
         {
@@ -230,6 +237,12 @@ namespace SCEEC.MI.High_Precision
             return RetureFalse(Issuccss[0]);
         }
 
+        public void BoomFive()
+        {
+            byte[] tpd = { 0x65, 0x65, CheckData(new byte[] { 0x65, 0x65 }) };
+            LocalPrecision.SendDataByte(tpd, 0, 3);
+        }
+
         public MisTak startUpVolate()
         {
             byte[] Issuccss = new byte[4096];
@@ -290,20 +303,39 @@ namespace SCEEC.MI.High_Precision
             byte[] Issuccss = new byte[4096];
             byte[] At = BitConverter.GetBytes(AmplitudeNum);
             byte[] tn = BitConverter.GetBytes(TanNum);
-            byte[] TestComman = { 0x8A, Channel, ExtensionNum, Range, At[0], At[1], At[2], At[3], tn[0], tn[1], tn[2], tn[3],
-                CheckData(new byte[12] { 0x8A, Channel, ExtensionNum, Range, At[0], At[1], At[2], At[3], tn[0], tn[1], tn[2], tn[3] }) };
+            byte[] TestComman = { 0x81, Channel, ExtensionNum, Range, At[0], At[1], At[2], At[3], tn[0], tn[1], tn[2], tn[3],
+                CheckData(new byte[12] { 0x81, Channel, ExtensionNum, Range, At[0], At[1], At[2], At[3], tn[0], tn[1], tn[2], tn[3] }) };
             if (0 < LocalPrecision.SendCommand(TestComman, ref Issuccss, 10))
                 return RetureFalse(Issuccss[0]);
             return RetureFalse(Issuccss[0]);
+        }
+        private byte[] FloatBuffreToByteBuffer(float[] buf)
+        {
+            List<byte> ret1 = new List<byte>();
+            foreach (var a in buf)
+            {
+                byte[] tp = BitConverter.GetBytes(a);
+                for (int i = 0; i < 4; i++)
+                {
+                    ret1.Add(tp[i]);
+                }
+            }
+
+            return ret1.ToArray();
+        }
+
+        public void Sendlargedata(float[] data)
+        {
+            LocalPrecision.SendDataByte(FloatBuffreToByteBuffer(data), 0, data.Length * 4);
         }
 
         public float[] ReadCheckPra()
         {
             byte[] Issuccss = new byte[3584];
             float[] result = new float[896];
-            byte[] TestComman = { 0x82, 0x82, CheckData(new byte[2] { 0x82, 0x82 }) };
+            byte[] TestComman = { 0x82, 0x82, 0x04 };
             byte[] ts = LocalPrecision.ReadPortsData(TestComman, Issuccss, 3584, 50);
-            if(ts.Length==3584)
+            if (ts.Length == 3584)
             {
                 for (int i = 0; i < 896; i++)
                 {
@@ -316,6 +348,10 @@ namespace SCEEC.MI.High_Precision
                 return null;
             }
         }
+
+
+
+
 
         public void ModifyMeasurementParameters(byte TestChannel, byte TestSpeed, byte Cn, byte Volate, byte Fre, TestKind kind)
         {
